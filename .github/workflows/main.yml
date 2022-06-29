@@ -1,0 +1,42 @@
+name: Python Script
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      script_path:
+        description: "Script Path"
+        required: true
+      argument1:
+        description: "Argument 1"
+        required: true
+      argument2:
+        description: "Argument 2"
+        required: true
+
+jobs:
+  Python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Import Package
+        run: |
+          pip install Authlib requests pandas numpy
+
+      - name: Run Script
+        run: |
+          SCRIPT_PATH=${{ github.event.inputs.script_path }} 
+          ARGUMENT1=${{ github.event.inputs.argument1 }} 
+          ARGUMENT2=${{ github.event.inputs.argument2 }} 
+          echo $SCRIPT_PATH
+          python3 test.py
+          
+      - name: Upload results
+        uses: actions/upload-artifact@v3
+        with:
+          name: result
+          path: data/file.csv
